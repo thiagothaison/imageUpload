@@ -6,7 +6,6 @@
 		var cropCoordinates = {};
 		var previewCoordinates = {};
 		var aspectRatio;
-		var imageUpload = '';
 
 		var settings = $.extend( {
 			uploadFolder      : './',
@@ -219,7 +218,8 @@
 						
 						beforeSend: function(){
 							label
-								.addClass('sending');
+								.addClass('sending')
+								.removeAttr('for');
 							
 						},
 						
@@ -227,8 +227,16 @@
 							label
 								.addClass('success')
 								.removeClass('sending')
-								.removeAttr('for')
-								.css('background-image','url(' + imageUpload + ')');
+								.attr('for', element.attr('id'))
+								
+							var reader = new FileReader();
+
+							reader.onload = function(f) {
+								label
+									.css('background-image','url(' + f.target.result + ')');
+							}
+
+							reader.readAsDataURL(file);
 								
 							jQuery.each(previewCoordinates, function(x,y){
 								label.css(x,y);
@@ -236,7 +244,15 @@
 							
 							settings.onComplete();
 							
-							console.log(result);
+							jcrop_api.destroy();
+							
+							bootstrapButtons.remove();
+							JcropCss.remove();
+							JcropJs.remove();
+							
+							containerCrop.remove();
+							
+							console.log(result)
 							
 						},
 						
@@ -394,13 +410,14 @@
 				reader.onload = function(f) {				
 					areaCrop
 						.attr('src',f.target.result);
-					imageUpload = f.target.result;
 				}
-				
+
 				areaCrop
+					//.attr('src',imageUpload)
 					//.attr('src','images/sago.jpg')
 					.attr('src','src')
 					.Jcrop({
+						bgOpacity: 0.4,
 						aspectRatio : 1,
 						onChange: function(c){
 							cropCoordinates.x  = c.x  * aspectRatio;
@@ -418,6 +435,7 @@
 							updatePreview(c);
 						}
 					},function(){
+					
 						jcrop_api = this
 						
 						var imgOriginal = new Image();

@@ -22,6 +22,16 @@ body.hover .imageUpload + label:after{
 	//height: 100%;
 }
 
+body.hover .imageUpload + label{
+	border-color: #FFE51E;
+
+	-webkit-box-shadow: 0px 0px 15px -1px #ffbdad;
+	   -moz-box-shadow: 0px 0px 15px -1px #ffbdad;
+	    -ms-box-shadow: 0px 0px 15px -1px #ffbdad;
+	     -o-box-shadow: 0px 0px 15px -1px #ffbdad;
+	        box-shadow: 0px 0px 15px -1px #ffbdad;
+}
+
 .imageUpload + label:before {
 	display: block;
 	content: '';
@@ -140,11 +150,11 @@ body.hover .imageUpload + label:after{
 .imageUpload + label.hover{
 	border-color: #FFE51E;
 
-	-webkit-box-shadow: 0px 0px 15px -1px #ffbdad;
-	   -moz-box-shadow: 0px 0px 15px -1px #ffbdad;
-	    -ms-box-shadow: 0px 0px 15px -1px #ffbdad;
-	     -o-box-shadow: 0px 0px 15px -1px #ffbdad;
-	        box-shadow: 0px 0px 15px -1px #ffbdad;
+	-webkit-box-shadow: 0px 0px 15px 2px #ffbdad !important;
+	   -moz-box-shadow: 0px 0px 15px 2px #ffbdad !important;
+	    -ms-box-shadow: 0px 0px 15px 2px #ffbdad !important;
+	     -o-box-shadow: 0px 0px 15px 2px #ffbdad !important;
+	        box-shadow: 0px 0px 15px 2px #ffbdad !important;
 }
 
 div#containerCrop{

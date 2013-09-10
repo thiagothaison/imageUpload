@@ -23,7 +23,8 @@ class UploadImagem {
 		if ( $this->file == null ){
 			throw new Exception('Nenhuma imagem para upload.'); 
 		}else{
-			$this->extension = strtolower(end(explode(".", $this->file["name"])));
+			$arrayFile = explode(".", $this->file["name"]);
+			$this->extension = strtolower(end($arrayFile));
 		}
 		
 		if ( $this->name == '' ){
@@ -41,6 +42,7 @@ class UploadImagem {
 				 array_key_exists("w", $this->crop) && array_key_exists("h", $this->crop) ) {
 				 
 				 $this->cropImage();
+				 exit();
 				 
 			}else{			
 				throw new Exception('Indices incorretos para cortar a imagem.'); 
@@ -57,11 +59,7 @@ class UploadImagem {
 		}
 		
 		
-		
-		
-		//$this->sendImage();
-
-		$this->cropImage();
+		$this->sendImage();
 
 	
 	}
@@ -81,19 +79,23 @@ class UploadImagem {
 		
 	}
 	
-	private function resizeImage(){
+	private function resizeImage($oW = null, $oH = null){
 	
 		$src = $this->src;
 		
-		list($width,$height)=getimagesize($this->uploadedFile);
+		if ($oW == null && $oH == null){
+			list($width,$height)=getimagesize($this->uploadedFile);
+		}else{
+			$width = $oW;
+			$height = $oH;
+		}
 
 		$newwidth  = $this->resize['width'];
 		$newheight = $this->resize['height'];
 		
 		$tmp=imagecreatetruecolor($newwidth,$newheight);
 
-		imagecopyresampled($tmp,$src,0,0,0,0,$newwidth,$newheight,
-		$width,$height);
+		imagecopyresampled($tmp,$src,0,0,0,0,$newwidth,$newheight,$width,$height);
 
 		//imagepng?? imagegif??
 		imagejpeg($tmp,$this->uploadDir . $this->name,100);
@@ -111,11 +113,19 @@ class UploadImagem {
 
 		imagecopyresampled($tmp, $src, 0, 0, $this->crop['x'], $this->crop['y'], $this->crop['w'], $this->crop['h'], $this->crop['w'], $this->crop['h']);
 		
-		//imagepng?? imagegif??
-		imagejpeg($tmp,$this->uploadDir . $this->name,100);
 		
-		print_r($this->crop);
-
+		
+		if ( $this->resize ){
+			if ( array_key_exists("width", $this->resize) && array_key_exists("height", $this->resize) ) {
+				$this->src = $tmp;
+				$this->resizeImage($this->crop['w'], $this->crop['h']);
+			}else{			
+				throw new Exception('Indices incorretos para o redimensionamento.'); 
+			}
+		}else{
+			//imagepng?? imagegif??
+			imagejpeg($tmp,$this->uploadDir . $this->name,100);
+		}
 	
 	}
 	
