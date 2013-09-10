@@ -3,6 +3,10 @@
 	
 		var element = this;
 		var jcrop_api;
+		var cropCoordinates = {};
+		var previewCoordinates = {};
+		var aspectRatio;
+		var imageUpload = '';
 
 		var settings = $.extend( {
 			uploadFolder      : './',
@@ -12,8 +16,8 @@
 			maxFileSize       : '1024',
 			fileTypes         : ['image/jpeg' , 'image/png'],
 			cropImage         : false,
-			onComplete        : null,
-			onError           : null
+			onComplete        : function(){},
+			onError           : function(){}
 		}, options);
 		
 	    return this.each(function() {
@@ -156,7 +160,7 @@
 			
 			var read = function(file) {
 
-				if ( jQuery.inArray(file.type, settings.fileTypes) ){
+				if ( jQuery.inArray(file.type, settings.fileTypes) == -1){
 					triggerError('Tipo de arquivo proibido.');
 					return;
 				}
@@ -168,9 +172,10 @@
 				
 				if ( settings.cropImage ){
 					cropImage(file);
+					return;
 				}
 				
-				//sendFile(file);
+				sendFile(file);
 			}
 			
 			var triggerError = function(message){
@@ -198,6 +203,10 @@
 				var data = new FormData();
 				data.append('file',file);
 				data.append('uploadFolder',settings.uploadFolder);
+				
+				jQuery.each(cropCoordinates, function(x,y){
+					data.append('cropCoordinates['+x+']',y);
+				});
 			
 				jQuery
 					.ajax({
@@ -218,20 +227,16 @@
 							label
 								.addClass('success')
 								.removeClass('sending')
-								.removeAttr('for');
+								.removeAttr('for')
+								.css('background-image','url(' + imageUpload + ')');
 								
-							var reader = new FileReader();
-
-							reader.onload = function(f) {
-								
-								label
-									.css('background-image','url(' + f.target.result + ')');
-							
-							}
-
-							reader.readAsDataURL(file);
+							jQuery.each(previewCoordinates, function(x,y){
+								label.css(x,y);
+							});
 							
 							settings.onComplete();
+							
+							console.log(result);
 							
 						},
 						
@@ -285,9 +290,9 @@
 					buttons       = div.clone(),
 					
 					buttonCancel  = button.clone(),
-					buttonCrop    = button.clone(),
+					buttonCrop    = button.clone();
 					
-					areaCrop      = img.clone(),
+					areaCrop      = img.clone(); var
 					
 					bootstrapButtons = link.clone(),
 					JcropCss		 = link.clone(),
@@ -357,7 +362,10 @@
 				buttonCrop
 					.text('Cortar')
 					.addClass('btn')
-					.addClass('btn-azul');
+					.addClass('btn-azul')
+					.bind('click',function(){
+						sendFile(file);
+					});
 				
 					
 				jQuery('body').append(
@@ -386,29 +394,61 @@
 				reader.onload = function(f) {				
 					areaCrop
 						.attr('src',f.target.result);
+					imageUpload = f.target.result;
 				}
-
 				
 				areaCrop
+					//.attr('src','images/sago.jpg')
 					.attr('src','src')
 					.Jcrop({
+						aspectRatio : 1,
 						onChange: function(c){
-							console.log(c.x);
-							console.log(c.y);
-							console.log(c.x2);
-							console.log(c.y2);
-							console.log(c.w);
-							console.log(c.h);
+							cropCoordinates.x  = c.x  * aspectRatio;
+							cropCoordinates.y  = c.y  * aspectRatio;
+							cropCoordinates.x2 = c.x2 * aspectRatio;
+							cropCoordinates.y2 = c.y2 * aspectRatio;
+							cropCoordinates.w  = c.w  * aspectRatio;
+							cropCoordinates.h  = c.h  * aspectRatio;
+
+							updatePreview(c);
+							
+						},
+						onSelect: function(c){
+						
+							updatePreview(c);
 						}
-						},function(){
-							jcrop_api = this
-						});
+					},function(){
+						jcrop_api = this
+						
+						var imgOriginal = new Image();
+						imgOriginal.src = areaCrop.attr('src');
+						
+						aspectRatio = imgOriginal.width / areaCrop.width();
+						
+						var bounds = this.getBounds();
+							boundx = bounds[0];
+							boundy = bounds[1];
+						
+					});
 
 				reader.readAsDataURL(file);
 				
 				picture.append(areaCrop);
-				
 
+			
+			}
+			
+			var updatePreview = function (c){
+			
+				if (parseInt(c.w) > 0){
+					var rx = label.width() / c.w;
+					var ry = label.height() / c.h;
+					
+					previewCoordinates.backgroundSize      = Math.round(rx * boundx) + 'px';
+					previewCoordinates.backgroundPositionX = '-' + Math.round(rx * c.x) + 'px';
+					previewCoordinates.backgroundPositionY = '-' + Math.round(ry * c.y) + 'px';
+
+				}
 			
 			}
 
@@ -421,11 +461,8 @@
 jQuery("#imageUpload")
 	.imageUpload({
 		uploadFolder : 'fotos/',
-		imageDefault : 'anonymous.gif',
+		imageDefault : 'images/anonymous.gif',
 		maxFileSize  : 999999,
-		fileTypes    : ["image/jpeg"],
-		cropImage    : true,
-		onComplete   : function(){
-			alert('Feited');
-		}
+		fileTypes    : ["image/jpeg","image/png"],
+		cropImage    : true
 	});
