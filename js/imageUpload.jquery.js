@@ -411,7 +411,7 @@
 					areaCrop
 						//.attr('src',imageOfUpload)
 						//.attr('src','images/sago.jpg')
-						//.attr('src','src')
+						.attr('src','src')
 						.Jcrop({
 							bgOpacity: 0.4,
 							aspectRatio : 1,

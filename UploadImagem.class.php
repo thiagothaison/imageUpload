@@ -50,7 +50,7 @@ class UploadImagem {
 		}
 		
 		if ( $this->resize ){
-			if ( array_key_exists("width", $this->resize) && array_key_exists("height", $this->resize) ) {
+			if ( $this->verifySizes() ) {
 				$this->resizeImage();
 				exit();
 			}else{			
@@ -78,16 +78,16 @@ class UploadImagem {
 		}
 		
 	}
-	
-	private function resizeImage($oW = null, $oH = null){
+
+	private function resizeImage(){
 	
 		$src = $this->src;
-		
-		if ($oW == null && $oH == null){
-			list($width,$height)=getimagesize($this->uploadedFile);
+
+		if ( is_resource($src) ){
+			$width  = imagesx($src);
+			$height = imagesy($src);
 		}else{
-			$width = $oW;
-			$height = $oH;
+			list($width,$height)=getimagesize($this->uploadedFile);
 		}
 
 		$newwidth  = $this->resize['width'];
@@ -116,9 +116,9 @@ class UploadImagem {
 		
 		
 		if ( $this->resize ){
-			if ( array_key_exists("width", $this->resize) && array_key_exists("height", $this->resize) ) {
+			if ( $this->verifySizes() ) {
 				$this->src = $tmp;
-				$this->resizeImage($this->crop['w'], $this->crop['h']);
+				$this->resizeImage();
 			}else{			
 				throw new Exception('Indices incorretos para o redimensionamento.'); 
 			}
@@ -139,6 +139,30 @@ class UploadImagem {
 			return  imagecreatefromgif($this->uploadedFile);
 		}
 	
+	}
+
+	private function verifySizes(){
+
+		if ( array_key_exists("width", $this->resize) || array_key_exists("height", $this->resize) ) {
+			if ( $this->crop )
+				list($width,$height)=array(1,1);
+			else
+				list($width,$height)=getimagesize($this->uploadedFile);
+			
+			if ( array_key_exists("width", $this->resize) && !array_key_exists("height", $this->resize)  ){
+				$this->resize['height'] = $this->resize['width'] * $height / $width;
+				return true;
+			}else if ( !array_key_exists("width", $this->resize) && array_key_exists("height", $this->resize)  ){
+				$this->resize['width'] = $this->resize['height'] * $width / $height;
+				return true;
+			}else{
+				return true;
+			}
+
+		}else{			
+			return false;
+		}
+
 	}
 	
 }
