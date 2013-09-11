@@ -18,6 +18,8 @@ class UploadImagem {
 
 		if ( strlen($this->uploadDir) == 0 ){
 			throw new Exception('O destino da imagem precisa ser informado.'); 
+		}else if ( !is_dir( $this->uploadDir ) ){
+			mkdir( $this->uploadDir );
 		}
 		
 		if ( $this->file == null ){
@@ -83,12 +85,12 @@ class UploadImagem {
 	
 		$src = $this->src;
 
-		if ( is_resource($src) ){
+		//if ( is_resource($src) ){
 			$width  = imagesx($src);
 			$height = imagesy($src);
-		}else{
-			list($width,$height)=getimagesize($this->uploadedFile);
-		}
+		//}else{
+		//	list($width,$height)=getimagesize($this->uploadedFile);
+		//}
 
 		$newwidth  = $this->resize['width'];
 		$newheight = $this->resize['height'];

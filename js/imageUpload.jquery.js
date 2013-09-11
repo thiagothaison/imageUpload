@@ -205,6 +205,7 @@
 				
 				jQuery.each(cropCoordinates, function(x,y){
 					data.append('cropCoordinates['+x+']',y);
+					console.log(x + "::" + y)
 				});
 			
 				jQuery
@@ -318,7 +319,8 @@
 					tableCrop     = div.clone(),
 					tableCellCrop = div.clone(),
 					center 		  = div.clone(),
-					border 		  = div.clone(),
+					fillBorder    = div.clone(),
+					largeBorder   = div.clone(),
 					box           = div.clone(),
 					picture       = div.clone(),
 					buttons       = div.clone(),
@@ -340,8 +342,11 @@
 				center
 					.attr('id','center');
 					
-				border
-					.attr('id','border');
+				fillBorder
+					.attr('id','fillBorder');
+					
+				largeBorder
+					.attr('id','largeBorder');
 					
 				box
 					.attr('id','box');
@@ -373,7 +378,12 @@
 					.addClass('btn')
 					.addClass('btn-azul')
 					.bind('click',function(){
-						sendFile(file);
+
+						if( cropCoordinates.x2 != "undefined" && cropCoordinates.x2 > 0)
+							sendFile(file);
+						else
+							alert('Antes de cortar a imagem, faça uma seleção.');
+
 					});
 				
 					
@@ -382,8 +392,10 @@
 						tableCrop.append(
 							tableCellCrop.append(
 								center.append(
-									border.append(
-										box.append(picture).append(buttons)
+									fillBorder.append(
+										largeBorder.append(
+											box.append(picture).append(buttons)
+										)
 									)
 								)
 							)
@@ -398,54 +410,73 @@
 				areaCrop
 					.attr('id','areaCrop');
 	
-				var reader = new FileReader();
-
-				reader.onload = function(f) {				
-					areaCrop
-						.attr('src',f.target.result);
-					imageOfUpload = f.target.result;
-				}
 
 				JcropJs.onload = function() {
 
-					areaCrop
-						//.attr('src',imageOfUpload)
-						//.attr('src','images/sago.jpg')
-						.attr('src','src')
-						.Jcrop({
-							bgOpacity: 0.4,
-							aspectRatio : 1,
-							onChange: function(c){
-								cropCoordinates.x  = c.x  * aspectRatio;
-								cropCoordinates.y  = c.y  * aspectRatio;
-								cropCoordinates.x2 = c.x2 * aspectRatio;
-								cropCoordinates.y2 = c.y2 * aspectRatio;
-								cropCoordinates.w  = c.w  * aspectRatio;
-								cropCoordinates.h  = c.h  * aspectRatio;
+					var reader = new FileReader();
 
-								updatePreview(c);
+					reader.onload = function(f) {				
+						areaCrop
+							.attr('src',f.target.result);
+
+						//imageOfUpload = new Image();
+						//imageOfUpload.src = f.target.result;
+
+						//var width, height;
+						//	width = 564;
+						//	height = width * imageOfUpload.height / imageOfUpload.width;
+
+
+						areaCrop
+							//.attr('src',imageOfUpload)
+							//.attr('src','images/sago.jpg')
+							//.attr('src','src')
+							//.attr('width',width)
+							//.attr('height',height)
+							.Jcrop({
+								bgOpacity: 0.4,
+								aspectRatio : 1,
+								onChange: function(c){
+									cropCoordinates.x  = c.x  * aspectRatio;
+									cropCoordinates.y  = c.y  * aspectRatio;
+									cropCoordinates.x2 = c.x2 * aspectRatio;
+									cropCoordinates.y2 = c.y2 * aspectRatio;
+									cropCoordinates.w  = c.w  * aspectRatio;
+									cropCoordinates.h  = c.h  * aspectRatio;
+
+									updatePreview(c);
+									
+								},
+								onSelect: function(c){
 								
-							},
-							onSelect: function(c){
+									updatePreview(c);
+								},
+								onRelease: function(c){
+									cropCoordinates.x  = 0;
+									cropCoordinates.y  = 0;
+									cropCoordinates.x2 = 0;
+									cropCoordinates.y2 = 0;
+									cropCoordinates.w  = 0;
+									cropCoordinates.h  = 0;
+								}
+							},function(){
 							
-								updatePreview(c);
-							}
-						},function(){
-						
-							jcrop_api = this
-							
-							var imgOriginal = new Image();
-							imgOriginal.src = areaCrop.attr('src');
-							
-							aspectRatio = imgOriginal.width / areaCrop.width();
-							
-							var bounds = this.getBounds();
-								boundx = bounds[0];
-								boundy = bounds[1];
-							
-						});
+								jcrop_api = this
+								
+								var imgOriginal = new Image();
+								imgOriginal.src = areaCrop.attr('src');
+								
+								aspectRatio = imgOriginal.width / areaCrop.width();
+								
+								var bounds = this.getBounds();
+									boundx = bounds[0];
+									boundy = bounds[1];
+								
+							});
+					}
 
 					reader.readAsDataURL(file);
+
 
 				};
 

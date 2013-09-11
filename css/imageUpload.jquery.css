@@ -1,25 +1,26 @@
 body.hover .imageUpload + label:before{
-	background-color: #FFF;
-	opacity: 0.8;
-	content: '';
+	float:left;
 	display: block;
 	width: 100%;
-	//height: 100%;
+	height: 100%;
+	background-color: #FFF;
+	opacity: 0.6;
 	position: absolute;
 }
 
 body.hover .imageUpload + label:after{
-	content: '\aSolte uma \aimagem aqui';
+	position: absolute;
+	float:left;
 	display: block;
 	width: 100%;
+	height: 100%;
 	text-align: center;
 	line-height: 1.3;
-	position: absolute;
 	font-family: Verdana;
 	font-size: 1.0em;
 	color: #008000;
+	content: '\aSolte uma \aimagem aqui';
 	white-space: pre;
-	//height: 100%;
 }
 
 body.hover .imageUpload + label{
@@ -183,12 +184,11 @@ div#tableCellCrop > div#center{
 	margin: auto;
 }
 
-div#center > div#border{
+div#center > div#fillBorder{
 	float:left;
 	margin: auto;
-	width: 600px;
-	border: 10px solid #CCC;
-	background-color: #CCC;
+	width: 620px;
+	border: 1px solid #AAA;
 	border-radius: 16px;
 	
 	-webkit-box-shadow: 1px 1px 5px 2px rgba(0, 0, 0, 0.2);
@@ -199,7 +199,17 @@ div#center > div#border{
 	
 }
 
-div#border > div#box{
+div#fillBorder > div#largeBorder{
+	float:left;
+	margin: auto;
+	width: 600px;
+	border: 10px solid #CCC;
+	background-color: #CCC;
+	border-radius: 16px;
+	
+}
+
+div#largeBorder > div#box{
 	float:left;
 	width: 580px;
 	border-radius: 8px;
