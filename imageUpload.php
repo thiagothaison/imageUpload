@@ -2,14 +2,40 @@
 
 require_once "UploadImagem.class.php";
 
-$Upload = new UploadImagem();
+if ( $_POST && $_FILES){
 
-$Upload->uploadDir = $_POST["uploadFolder"];
-$Upload->file      = $_FILES['file'];
-$Upload->name      = date('YmdHis');
-$Upload->crop      = $_POST["cropCoordinates"];
-$Upload->resize    = array('width'=>350);
+	$Upload = new UploadImagem();
 
-$Upload->upload();
+	if ( isset( $_POST["uploadFolder"] ) ){
+		$Upload->uploadDir = $_POST["uploadFolder"];		
+	}
 
-//print_r($_POST);
+	if ( isset( $_FILES["imageUpload"] ) ){
+		$Upload->file = $_FILES['imageUpload'];
+	}
+
+	if ( isset( $_POST["resizeTo"] ) ){
+		$Upload->resize = $_POST['resizeTo'];
+	}
+
+	if ( isset( $_POST["renameTo"] ) ){
+		$Upload->name = $_POST['renameTo'];
+	}
+
+	if ( isset( $_POST["cropCoordinates"] ) ){
+		$Upload->crop = $_POST['cropCoordinates'];
+	}
+
+	if ( isset( $_POST["convertTo"] ) ){
+		$Upload->convertTo = $_POST['convertTo'];
+	}
+
+	try{
+		$Upload->upload();
+		header('HTTP/1.0 200 OK');
+	}catch(exception $e){
+		echo $e->getMessage();
+		header('HTTP/1.1 500 Internal Server Error');
+	}
+
+}

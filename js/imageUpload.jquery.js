@@ -1,24 +1,35 @@
+
 (function($){
 	$.fn.imageUpload = function(options) {
 	
-		var element = this;
-		var jcrop_api;
-		var cropCoordinates = {};
-		var previewCoordinates = {};
-		var aspectRatio;
-		imageOfUpload = null;
+		var element = this,
+		    cropCoordinates = {},
+		    previewCoordinates = {},
+		    jcrop_api,
+		    scale,
+		    imageOfUpload,
+			fileTypes = new Array('image/jpeg','image/png','image/bmp','image/gif');
 
-		var settings = $.extend( {
+		settings = $.extend( {
 			path			  : '',
 			uploadFolder      : './',
 			cssFile           : 'css/imageUpload.jquery.css',
 			uploadFile        : 'imageUpload.php',
+
 			imageDefault      : 'data:image/png;base64,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',
 			maxFileSize       : '1024',
-			fileTypes         : ['image/jpeg' , 'image/png'],
-			cropImage         : false,
+			fileTypes         : ['image/jpeg','image/png','image/bmp','image/gif'],
+			
+			cropImage         : null,
+			resizeWidthTo     : null,
+			resizeHeightTo    : null,
+			renameTo          : null,
+			convertTo         : null,
+
 			onComplete        : function(){},
-			onError           : function(){}
+			onError           : function(){},
+			onBeforeSend      : function(){}
+
 		}, options);
 		
 	    return this.each(function() {
@@ -33,6 +44,11 @@
 				css.type = 'text/css';
 				head.appendChild(css);
 
+			jQuery.each(settings.fileTypes, function(x,y){
+				if ( jQuery.inArray(y, fileTypes) == -1){
+					settings.fileTypes.splice(x,1);
+				}
+			});
 			
 			if ( element.attr('type') != 'file' ){
 				alert('Objeto inválido!\n\nimageUpload deve ser usado obrigatoriamente num input[type=\'file\']');
@@ -54,6 +70,7 @@
 				.append(progress);
 			
 			element
+				.attr('accept',settings.fileTypes.join(","))
 				.addClass('imageUpload')
 				.hide();
 						
@@ -159,7 +176,12 @@
 			
 			var read = function(file) {
 
-				if ( jQuery.inArray(file.type, settings.fileTypes) == -1){
+				if ( jQuery.inArray(file.type, fileTypes) >= 0){
+					if ( jQuery.inArray(file.type, settings.fileTypes) == -1){
+						triggerError('Tipo de arquivo proibido.');
+						return;
+					}
+				}else{
 					triggerError('Tipo de arquivo proibido.');
 					return;
 				}
@@ -200,13 +222,29 @@
 			var sendFile = function(file) {
 				
 				var data = new FormData();
-				data.append('file',file);
+				data.append('imageUpload',file);
 				data.append('uploadFolder',settings.path + settings.uploadFolder);
 				
 				jQuery.each(cropCoordinates, function(x,y){
 					data.append('cropCoordinates['+x+']',y);
-					console.log(x + "::" + y)
 				});
+
+				if ( settings.convertTo != null ){
+					data.append('convertTo', settings.convertTo);
+				}
+
+				if ( settings.renameTo != null ){
+					data.append('renameTo', settings.renameTo);
+				}
+
+				if ( settings.resizeWidthTo != null ){
+					data.append('resizeTo[width]', settings.resizeWidthTo);
+				}
+
+				if ( settings.resizeHeightTo != null ){
+					data.append('resizeTo[height]', settings.resizeHeightTo);
+				}
+
 			
 				jQuery
 					.ajax({
@@ -221,6 +259,8 @@
 							label
 								.addClass('sending')
 								.removeAttr('for');
+
+							settings.onBeforeSend()
 							
 						},
 						
@@ -244,7 +284,7 @@
 							});
 							
 							settings.onComplete();
-							
+
 							jcrop_api.destroy();
 							
 							head.removeChild(bootstrapButtons);
@@ -258,6 +298,7 @@
 						},
 						
 						error: function(result){
+
 							label
 								.addClass('error')
 								.removeClass('sending')
@@ -265,6 +306,8 @@
 								
 							triggerError('Erro durante o envio. Tente novamente.');
 							settings.onError();
+							
+							console.log(result.responseText);
 						},
 						
 						xhr: function() {
@@ -306,7 +349,7 @@
 				var JcropJs = document.createElement('script');
 					JcropJs.id   = 'JcropJs';
 					JcropJs.type = 'text/javascript';
-					JcropJs.src  = settings.path + 'plugin/Jcrop/js/jquery.Jcrop.js';
+					JcropJs.src  = settings.path + 'plugin/Jcrop/js/jquery.Jcrop.js?' + new Date().getTime();
 			
 				var 
 					div           = jQuery('<div></div>'), 
@@ -329,9 +372,18 @@
 					buttonCrop    = button.clone();
 					
 					areaCrop      = img.clone(); 
+
+				jQuery(document).bind('keydown',function(e){
+					if ( e.which == 27 ) {
+	                    buttonCancel.trigger('click');
+	                };
+				});
 				
 				containerCrop
-					.attr('id','containerCrop');
+					.attr('id','containerCrop')
+					.bind('click', function(){
+						buttonCancel.trigger('click');
+					});
 					
 				tableCrop
 					.attr('id','tableCrop');
@@ -340,7 +392,10 @@
 					.attr('id','tableCellCrop');
 
 				center
-					.attr('id','center');
+					.attr('id','center')
+					.bind('click', function(e){
+						e.stopPropagation();
+					});
 					
 				fillBorder
 					.attr('id','fillBorder');
@@ -371,6 +426,8 @@
 						head.removeChild(JcropJs);
 						
 						containerCrop.remove();
+
+						element.val('');
 					});
 					
 				buttonCrop
@@ -415,34 +472,18 @@
 
 					var reader = new FileReader();
 
-					reader.onload = function(f) {				
-						areaCrop
-							.attr('src',f.target.result);
-
-						//imageOfUpload = new Image();
-						//imageOfUpload.src = f.target.result;
-
-						//var width, height;
-						//	width = 564;
-						//	height = width * imageOfUpload.height / imageOfUpload.width;
-
+					reader.onload = function(f) {
 
 						areaCrop
-							//.attr('src',imageOfUpload)
-							//.attr('src','images/sago.jpg')
-							//.attr('src','src')
-							//.attr('width',width)
-							//.attr('height',height)
+							.attr('src',f.target.result)
 							.Jcrop({
-								bgOpacity: 0.4,
-								aspectRatio : 1,
 								onChange: function(c){
-									cropCoordinates.x  = c.x  * aspectRatio;
-									cropCoordinates.y  = c.y  * aspectRatio;
-									cropCoordinates.x2 = c.x2 * aspectRatio;
-									cropCoordinates.y2 = c.y2 * aspectRatio;
-									cropCoordinates.w  = c.w  * aspectRatio;
-									cropCoordinates.h  = c.h  * aspectRatio;
+									cropCoordinates.x  = c.x  * scale;
+									cropCoordinates.y  = c.y  * scale;
+									cropCoordinates.x2 = c.x2 * scale;
+									cropCoordinates.y2 = c.y2 * scale;
+									cropCoordinates.w  = c.w  * scale;
+									cropCoordinates.h  = c.h  * scale;
 
 									updatePreview(c);
 									
@@ -466,17 +507,35 @@
 								var imgOriginal = new Image();
 								imgOriginal.src = areaCrop.attr('src');
 								
-								aspectRatio = imgOriginal.width / areaCrop.width();
+								scale = imgOriginal.width / areaCrop.width();
 								
 								var bounds = this.getBounds();
 									boundx = bounds[0];
 									boundy = bounds[1];
+
+								option = {};
+								
+								jQuery.each(settings.cropImage, function(x,y){
+
+									if ( typeof(y) == "string" ){
+										eval('option.' + x + '=' + "'" + y + "'");
+									}else if( typeof(y) == "number" ){
+										eval('option.' + x + '=' + y);
+									}else if ( typeof(y) == "object" ){
+										if ( Object.prototype.toString.call(y) == "[object Array]" ){
+											eval('option.' + x + '= [' + y.join(',') + ']')
+										}
+									}
+									
+								});
+
+								jcrop_api.setOptions(option);
+								jcrop_api.release();
 								
 							});
 					}
 
 					reader.readAsDataURL(file);
-
 
 				};
 
@@ -511,9 +570,14 @@
 
 jQuery("#imageUpload")
 	.imageUpload({
-		uploadFolder : 'fotos/',
-		imageDefault : 'images/anonymous.gif',
-		maxFileSize  : 999999,
-		fileTypes    : ["image/jpeg","image/png"],
-		cropImage    : true
+		uploadFolder    : 'fotos/',
+		imageDefault    : 'images/anonymous.gif',
+		maxFileSize     : 999999,
+		fileTypes       : ["image/jpeg","image/png","application/pdf"],
+
+		renameTo        : 'myFile',
+		convertTo       : 'jpg',
+
+		cropImage       : { bgColor: 'black', bgOpacity: 0.4, aspectRatio : 1}
+
 	});
