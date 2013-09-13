@@ -20,3 +20,15 @@ Visão geral dos recursos
 * Conversão de imagens durante o upload;
 * Possibilidade de filtrar os tipos de imagens e tamanho permitidos;
 * Suporte a drag and drop.
+
+Autor
+-----
+
+* Thiago Thaison (thiagothaison@gmail.com)
+
+
+
+Como usar?
+----------
+
+Para usar imageUpload, basta instanciálo à algum elemento input[type='file']
