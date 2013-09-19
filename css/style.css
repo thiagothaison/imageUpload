@@ -1,0 +1,160 @@
+form{
+	position:relative;
+}
+
+form #msgError{
+	display:none;
+	position: relative;
+	left: 10px;
+	top: -2px;
+	max-width: 340px;
+	line-height: 15px;
+	height: 18px;
+	border: 1px solid #DA3E3E;
+	background-color: #E78383;
+	border-radius: 5px;
+	min-width: 90px;
+	width: auto;
+	padding: 5px 10px;
+	float: left;
+	text-align: left;
+	color: #FFF;
+	font-family: Verdana;
+	font-size: 10px;
+	
+	-webkit-border-radius: 5px;
+	   -moz-border-radius: 5px;
+	    -ms-border-radius: 5px;
+	     -o-border-radius: 5px;
+			
+	-webkit-text-shadow: -1px 1px #333;
+	   -moz-text-shadow: -1px 1px #333;
+		-ms-text-shadow: -1px 1px #333;
+		 -o-text-shadow: -1px 1px #333;
+			text-shadow: -1px 1px #333;
+}
+
+form #msgError:before{
+	width: 0;
+	height: 0;
+	border-top: 7px solid transparent;
+	border-bottom: 7px solid transparent;
+	border-right: 7px solid #DA3E3E;
+	content: ' ';
+	position: absolute;
+	left: -7px;
+	top: 7px;
+}
+
+form #msgError:after {
+	width: 0;
+	height: 0;
+	border-top: 5px solid transparent;
+	border-bottom: 5px solid transparent;
+	border-right: 5px solid #E78383;
+	content: ' ';
+	position: absolute;
+	left: -5px;
+	top: 9px;
+}
+
+form #msgError > span{
+	display: table-cell;
+	vertical-align: middle;
+}
+
+form #progressBar{
+	display:none;
+	float: left;
+	width:100%;
+	color: #FFF;
+	font-family: Verdana;
+	font-size: 10px;
+	height: 12px;
+	border: 1px solid #D36600;
+	margin-top: 5px;
+	width: 122px;
+	
+	-webkit-border-radius: 5px;
+	   -moz-border-radius: 5px;
+		-ms-border-radius: 5px;
+		 -o-border-radius: 5px;
+			border-radius: 5px;
+
+	-webkit-box-shadow: 1px 1px 7px 0px #CCC;
+	   -moz-box-shadow: 1px 1px 7px 0px #CCC;
+		-ms-box-shadow: 1px 1px 7px 0px #CCC;
+		 -o-box-shadow: 1px 1px 7px 0px #CCC;
+			box-shadow: 1px 1px 7px 0px #CCC;
+			
+	-webkit-text-shadow: -1px 1px #333;
+	   -moz-text-shadow: -1px 1px #333;
+		-ms-text-shadow: -1px 1px #333;
+		 -o-text-shadow: -1px 1px #333;
+			text-shadow: -1px 1px #333;
+}
+
+form #progressBar.sending,
+form #progressBar.success,
+form #progressBar.error{
+	display:block;
+}
+
+form #progressBar.sending > #progress{
+	background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAoCAIAAABxU02MAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAIGNIUk0AAHolAACAgwAA+f8AAIDpAAB1MAAA6mAAADqYAAAXb5JfxUYAAAD+SURBVHjanNRBTgJBEEbh17+6IrgDxSOQeA0u6jm8hCRu3UHAjTJhZZhmIZPMpGugq2pbef0tOqmU31ZMnsknykni652fDTKWZMRkbpd6oNnwu7XLFqZPImfMySe+P0e3Ceavsnf/7GGcfVwwXegqyyg7W5LuFGVfaP8UZqF8vJq14mq2iD1sEXvYYexkh7GT7cV+thf72S4OsV0cYgGFWUBhFhDNNsYCYr+OsSSJZhdhdc9xL1KIzS27j5EzdIO9fJBC7OWDFGaRGdex1hmqZq24mi1iD1vEHnYYO9lh7GR7sZ/txX62i0NsF4dYQGEWECnFWEA3zsWVwwrnAQBZSfDLXVC6gwAAAABJRU5ErkJggg==);
+}
+
+form #progressBar > #progress{
+	width:100%;
+	float:left;
+	text-align: center;
+	height:12px;
+	
+	-webkit-border-radius: 4px;
+	   -moz-border-radius: 4px;
+		-ms-border-radius: 4px;
+		 -o-border-radius: 4px;
+			border-radius: 4px;
+			
+	-webkit-animation: progressBar 0.9s infinite linear;
+	   -moz-animation: progressBar 0.9s infinite linear;
+		 -o-animation: progressBar 0.9s infinite linear;
+}
+
+form #progressBar.success{
+	border: 1px solid #58BC42;
+}
+
+form #progressBar.success > #progress{
+	background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAoCAIAAABxU02MAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAP1JREFUeNqc1k8LgjAYx/HtkfIghFrHol5lL6F3Fx26R/+OpQZ5UNC1pSCzLbbfc51fPvIIMr47bONp2oqW/QxxOmb7vHoyy9BsEhvLgAd59SjqzFbGYUq2M8HEvbwIIWwPrKKNOe7YPy+chPMkXNAfltlnGa054wSzjWgIZtW2YdYQu7Pj2Isdx16sFvuyWuzLDjHADjHA9jHG9jHGqhhmVQyzKoZZFd/KM8hyoqLKAFZu6lXnhLFyU9f3iTC22xRhbPeBCGatsQtrjh1Zc+zIGmJ31hC7s+PYix3HXqwW+7Ja7MsOMcAOMcD2McZ+/wecY6yK5T0KY+V8BBgAgHYbs+0pru4AAAAASUVORK5CYII=);
+}
+
+form #progressBar.error{
+	border: 1px solid red;
+}
+
+form #progressBar.error + div#msgError{
+	display:table;
+}
+
+form #progressBar.error > #progress{
+	background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAoCAIAAABxU02MAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAOVJREFUeNqc1EEKgzAQheFklO5DPIB4RM/pFRQXXSruChU1TarFqkmbebMNPx88QXkvy1RrsyzicpLoUVVT34vAUaKUv0ySqet+lKlSFHoTxoxtK8J3Kwp//J/VOs0yAtk8F1ISzJp5Jph1a8OsJ45nzzGLvcgc9hBz2aPMZPcYYL9kPrvFGPuRIdbFMPuWUdbFMOvisWkw1v7haBoGgLVLzcNAGGuXetY1Yey6FGHs+oEIZoNxDOuPI1l/HMl64njWE8ez55jFnmMWe4i57CHmsnsMsHsMsFuMsVuMsS6GWXsvAQYAs6wYtfphqTUAAAAASUVORK5CYII=);
+}
+
+
+
+
+@-webkit-keyframes progressBar {
+	from { background-position-x: 0px; }
+	to { background-position-x: 20px; }
+}
+
+@-moz-keyframes progressBar {
+	from { background-position-x: 0px; }
+	to { background-position-x: 20px; }
+}
+
+@-o-keyframes progressBar {
+	from { background-position-x: 0px; }
+	to { background-position-x: 20px; }
+}

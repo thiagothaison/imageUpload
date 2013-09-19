@@ -138,7 +138,7 @@ body.hover .imageUpload + label{
 	line-height: 1.5;
 }
 
-.imageUpload + label.sending > span.progress{
+/*.imageUpload + label.sending > span.progress{
 	display: block;
 }
 .imageUpload + label > span.progress{
@@ -147,7 +147,7 @@ body.hover .imageUpload + label{
 	height: 4px;
 	background-color: #008000;
 }
-
+*/
 .imageUpload + label.hover{
 	border-color: #FFE51E;
 

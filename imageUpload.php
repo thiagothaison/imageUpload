@@ -1,6 +1,6 @@
 <?php
 
-require_once "UploadImagem.class.php";
+require_once "imageUpload.class.php";
 
 if ( $_POST && $_FILES){
 

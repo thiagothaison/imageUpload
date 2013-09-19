@@ -20,7 +20,7 @@ Visão geral dos recursos
 * Conversão de imagens durante o upload;
 * Possibilidade de filtrar os tipos de imagens e tamanho permitidos;
 * Suporte a drag and drop;
-* Barra de progresso do upload.
+* Suporte a barra de progresso.
 
 
 
@@ -39,12 +39,12 @@ Para configurar o comportamento do plugins, algum parâmetros estão disponívei
 
 * path;
 * uploadFolder;
+* uploadFile;
 * imageDefault;
 * maxFileSize;
 * fileTypes;
 * Jcrop;
-* resizeWidthTo;
-* resizeHeightTo;
+* resizeTo;
 * renameTo;
 * convertTo.
 
@@ -61,6 +61,13 @@ Define o local para onde as imagens serão enviadas após o upload:
 
     jQuery("#file").imageUpload(
     	uploadFolder : 'images/user/'
+    );
+
+### uploadFile
+Define o arquivo que será responsável por receber as e tratar as informações para o upload:
+
+    jQuery("#file").imageUpload(
+    	uploadFolder : 'imageUpload.php',
     );
 
 ### imageDefault
@@ -101,19 +108,31 @@ Envia ao Jcrop os parâmetros que serão utilizados:
     	}
     );
 
-### resizeWidthTo
-Define a largura da saída da imagem:
+### resizeTo
+Define a altura e/ou largura da saída da imagem:
 
     jQuery("#file").imageUpload(
-    	resizeWidthTo : 750
+    	resizeTo : {
+			width: 150,
+			height: 150
+		}
     );
-
-### resizeHeightTo
-Define a altura da saída da imagem:
+	
+É possível também passar apenas uma dimensão e a outra é calculada automaticamente, mantendo a proporção da imagem:
 
     jQuery("#file").imageUpload(
-    	resizeHeightTo : 750
+    	resizeTo : {
+			width: 450
+		}
     );
+	
+ou
+
+    jQuery("#file").imageUpload(
+    	resizeTo : {
+			height: 370
+		}
+    );	
 
 ### renameTo
 Define o nome da saída da imagem:
@@ -142,21 +161,36 @@ Algumas funções de callback estão disponíveis:
 
 * onBeforeSend;
 * onComplete;
-* onError.
+* onError;
+* onProgress;
+* onDrag;
+* onDrop.
+
 
 ### onBeforeSend
 
-O evento é disparado antes do envio da imagem:
+O evento `onBeforeSend` é disparado antes do envio da imagem:
 
     jQuery("#file").imageUpload(
     	onBeforeSend : function(){
     		jQuery("span.status").text('Aguarde');
     	}
     );
+	
+`onBeforeSend` pode também receber um parâmetro com as informações do arquivo:
+
+    jQuery("#file").imageUpload(
+    	onBeforeSend : function(file){
+    		console.info('Última modificação : ' + file.lastModifiedDate );
+			console.info('Nome : ' + file.name );
+			console.info('Tamanho : ' + file.size + 'b' );
+			console.info('Tipo : ' + file.type );
+    	}
+    );
 
 ### onComplete
 
-O evento é disparado após o envio da imagem ser concluído:
+O evento `onComplete` é disparado após o envio da imagem ser concluído com sucesso:
 
     jQuery("#file").imageUpload(
     	onComplete : function(){
@@ -164,9 +198,10 @@ O evento é disparado após o envio da imagem ser concluído:
     	}
     );
 
+
 ### onError
 
-O evento é disparado quando ocorre algum erro durante o upload:
+O evento `onError` é disparado quando ocorre algum erro durante o upload:
 
     jQuery("#file").imageUpload(
     	onError : function(){
@@ -174,7 +209,43 @@ O evento é disparado quando ocorre algum erro durante o upload:
     	}
     );
     
+`onError` pode também receber um parâmetro com a mensagem de erro:
 
+    jQuery("#file").imageUpload(
+    	onError : function(erro){
+    		jQuery("span.status").text(erro);
+    	}
+    );
+
+### onProgress
+O evento `onProgress` é disparado durante o envio da imagem e recebe um parâmetro com as informações da transferência:
+
+    jQuery("#file").imageUpload(
+    	onProgress : function(p){		
+			percent = p.loaded / p.total * 100 + '%';
+			jQuery("progressBar").css('width',percent);
+    	}
+    );
+	
+### onDrag
+
+O evento `onDrag` é disparado quando algo é arrastado para o navegador:
+
+    jQuery("#file").imageUpload(
+    	onDrag : function(){
+    		console.inf('Novo arquivo para ser arrastado');
+    	}
+    );
+
+### onDrop
+
+O evento `onDrop` é disparado quando algo é solto no navegador:
+
+    jQuery("#file").imageUpload(
+    	onDrop : function(){
+    		console.inf('Novo arquivo solto no navegador');
+    	}
+    );
 
 
 Autor

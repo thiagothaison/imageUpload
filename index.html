@@ -1,13 +1,94 @@
 <html>
 <head>
-	<meta charset="UTF-8"/>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<link href="css/style.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-	<h1>Olá Mundo!</h1>
 	<form>
 		<input type="file" id="imageUpload" />
+		<span id="progressBar">
+			<span id="progress"></span>
+		</span>
+		<div id="msgError">
+			<span></span>
+			</div>
 	</form>
 </body>
 <script src="js/jquery-1.9.1.js" type="text/javascript"></script>
 <script src="js/imageUpload.jquery.js" type="text/javascript"></script>
+<script>
+
+jQuery(document).ready(function(){
+
+	jQuery("#imageUpload")
+		.imageUpload({
+			imageDefault : 'images/anonymous.gif',
+			maxFileSize     : 1024,
+			fileTypes       : ["image/jpeg"],
+			convertTo       : 'jpg',
+			
+			resizeTo        : {
+				width       : 150,
+				height      : 150
+			},
+			/*
+			Jcrop           : { 
+				bgColor     : 'black',
+				bgOpacity   : 0.2,
+				aspectRatio : 1
+			},
+			*/
+			uploadFolder    : 'fotos/thumbs/',
+			
+			onBeforeSend    : function(f){
+				jQuery("#progressBar")
+					.addClass('sending')
+					.removeClass('success')
+					.removeClass('error');
+					
+				jQuery("#progressBar > #progress")
+					.css('width', '0%')
+					.text('0%');
+					
+				console.log(f);
+					
+			},
+			
+			onComplete : function(){
+				jQuery("#progressBar")
+					.removeClass('sending')
+					.addClass('success')
+					.removeClass('error');
+			},	
+			
+			onError : function(error){
+				jQuery("#progressBar")
+					.removeClass('sending')
+					.removeClass('success')
+					.addClass('error');
+				
+				jQuery("#msgError > span").text(error);
+
+			},
+			
+			onDrag : function(e){
+				jQuery("#progressBar")
+					.removeClass('error')
+					.removeClass('success')
+					.removeClass('sending');
+			},
+			
+			onProgress : function(p){
+				
+				percent = p.loaded / p.total * 100;
+			
+				jQuery("#progressBar > #progress")
+					.css('width', percent + '%')
+					.text(Math.round(percent) + '%');
+			}
+	
+		});
+});
+
+</script>
 </html>
