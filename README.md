@@ -30,7 +30,7 @@ How to use ?
 
 To use ImageUpload, just instantiate it to some element input [type='file']
 
-	jQuery("#file").ImageUpload();
+	jQuery("#file").imageUpload();
   
 
 Parameters
